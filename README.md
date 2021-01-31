@@ -53,4 +53,4 @@ There's not really a good answer to this. The longer you leave it going, the bet
 The tool does pretty much exactly what I needed it to do to get the trophy, and nothing more. I'm releasing it in this state because it was Good Enough for me, but there's definitely plenty of ways it could be improved.
 
 ## Can I make changes to it?
-Feel free. I made this in Unity 2020.1, but I imagine it can be made to work in any vaguely recent Unity version without too much pain. You'll need to reimport the TextMeshPro assets, but Unity ought to prompt you for that when you open the SampleScene.unity scene. I make no guarantees as to the quality of my code.
+Of course! I made this in Unity 2020.1, but I imagine it'll open in any vaguely recent Unity version without too much pain. You'll need to reimport the TextMeshPro assets for the UI, but Unity ought to prompt you for that when you open the SampleScene.unity scene. I make no guarantees as to the quality of my code or Unity workmanship.
