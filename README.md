@@ -36,9 +36,9 @@ This approach isn't 100% reliable (sometimes you just won't find the Monokubs ea
 * Use the 'Playback' button to enter Playback mode, or 'Edit' to go back to Edit mode. You can switch back and forth between modes without losing your current solution, as long as you don't make any changes in Edit mode.
 
 ## Playback Mode
-* Use PageUp/PageDown to step back/forwards through the best solution the tool has generated. Home/End jump to the start/end states.
+* Use PageUp/PageDown to step back/forwards through the best solution the tool has generated. Home/End jump to the start/end states. Note that when you step forwards (with PageDown), the tool will highlight in red the tiles it's just removed (to make it easier to copy that move in-game).
 * Use the arrow keys to move the cursor.
-* Press Delete to dig out a group of matching tile, changing all tiles around it (i.e. the same thing that digging out a tile in-game does). You can use this if you want to try out solutions manually in the tool (and then use PageUp to undo your edits). Making manual changes halfway through a solution will discard the rest of the solution after that point.
+* Press Delete to dig out a group of matching tiles, changing all tiles around it (i.e. the same thing that digging out a tile in-game does). You can use this if you want to try out solutions manually in the tool (and then use PageUp to undo your edits). Making manual changes halfway through a solution will discard the rest of the solution after that point.
 * Use the 'Edit' button to go back to Edit mode, resetting the board to its original layout (i.e. what it was when you were last in Edit mode).
 * Use the 'Edit Current' button to go back to Edit mode, keeping the board in its current layout. Use this one when you're working through a solution in-game and you discover a treasure. (Note: Doing this will discard the board's original layout and any solution generated so far, and leave you with just 'what the board currently looks like'.)
 
