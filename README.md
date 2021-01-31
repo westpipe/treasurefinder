@@ -38,8 +38,8 @@ This approach isn't 100% reliable (sometimes you just won't find the Monokubs ea
 * Use the 'Edit' button to go back to Edit mode, with the board in its starting state.
 * Use the 'Edit Current' button to go back to Edit mode, with the board in its current state. Use this one when you're working through a solution in-game and you discover a treasure.
 
-## Miscellaneous questions
-### Why does my predicted score in Solve mode sometimes go down?
+# Miscellaneous questions
+## Why does my predicted score in Solve mode sometimes go down?
 Internally, the tool treats empty tiles as being worth less if the tiles next to them aren't also empty (under the assumption that if there's a treasure it doesn't know about, it's a bit more likely to clear contiguous regions this way and so might uncover them on its own). The score it shows you is the actual score the solution should get you in-game, so it's possible that its predicted in-game score might go down if it thinks that its latest solution has a better chance of finding extra treasure. TBH, for the purposes of the trophy, what really matters is how many of the treasures you can uncover rather than how many individual tiles you clear.
 
 ## How long should I leave it in Solve mode?
