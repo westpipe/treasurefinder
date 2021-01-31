@@ -10,6 +10,7 @@ public class UserInterface : MonoBehaviour
 	[Header("Prefabs")]
 	[SerializeField] private GameObject m_groundPrefab;
 	[SerializeField] private GameObject[] m_tilePrefabs;
+	[SerializeField] private GameObject m_removedTilePrefab;
 	[SerializeField] private GameObject m_cursorPrefab;
 	[SerializeField] private GameObject m_majorRegionPrefab;
 	[SerializeField] private GameObject m_minorRegionPrefab;
@@ -136,24 +137,32 @@ public class UserInterface : MonoBehaviour
 		else if ( m_editorMode == EditorMode.Solve )
 		{
 			UpdateProgressText();
-			UpdateMapVisuals( m_solver.FinalLayout );
+			UpdateMapVisuals( m_solver.FinalLayout, false );
 		}
 	} // Update
 
-	private void UpdateTileVisuals( int _x, int _y, int _tileColour )
+	private void UpdateTileVisuals( int _x, int _y, int _tileColour, bool _highlightRemovedTiles )
 	{
-		if ( m_visibleLayout.GetColour(_x,_y) != _tileColour )
+		// If _highlightRemovedTiles is true then we add a 'removed tile' prefab for any spaces that are now empty
+		// but weren't at the last time this was called. Otherwise, empty spaces have no prefab.
+
+		int index = _x + _y*Constants.EditableWidth;
+		int prevColour = m_visibleLayout.GetColour(_x,_y);
+		bool tileHasChanged = ( prevColour != _tileColour ) // contents of tile has changed
+						   || ( ( _tileColour == 0 ) && ( _highlightRemovedTiles || (m_tiles[index] != null) ) ); // tile remains empty but we're possibly toggling whether to highlight it or not
+
+		if ( tileHasChanged )
 		{
 			m_visibleLayout.SetColour(_x,_y, _tileColour);
 
-			int index = _x + _y*Constants.EditableWidth;
 			if ( m_tiles[index] != null )
 			{
 				GameObject.Destroy( m_tiles[index].gameObject );
 			}
-			if ( _tileColour > 0 )
+			if ( ( _tileColour > 0 ) || ( _highlightRemovedTiles && ( prevColour != 0 ) ) )
 			{
-				m_tiles[index] = GameObject.Instantiate( m_tilePrefabs[_tileColour-1] ).transform;
+				GameObject prefab = ( _tileColour > 0 ) ? m_tilePrefabs[_tileColour-1] : m_removedTilePrefab;
+				m_tiles[index] = GameObject.Instantiate( prefab ).transform;
 				m_tiles[index].parent = m_groundTiles[index];
 				m_tiles[index].localPosition = Vector3.zero;
 				m_tiles[index].localRotation = Quaternion.identity;
@@ -169,7 +178,7 @@ public class UserInterface : MonoBehaviour
 	{
 		m_editLayout.SetColour( m_cursorX, m_cursorY, _colour );
 		m_layoutChanged = true; // forces the solver to restart when entering solve mode
-		UpdateTileVisuals( m_cursorX, m_cursorY, _colour );
+		UpdateTileVisuals( m_cursorX, m_cursorY, _colour, false );
 		Edit_MoveCursorToNextTile();
 	}
 
@@ -270,7 +279,7 @@ public class UserInterface : MonoBehaviour
 			nextLayout.RemoveArea( areaID );
 			m_playbackLayouts.Add( nextLayout );
 			++m_playbackIndex;
-			UpdateMapVisuals( nextLayout );
+			UpdateMapVisuals( nextLayout, true );
 			UpdatePlaybackText();
 		}
 	} // Playback_ClearTileUnderCursor
@@ -323,7 +332,7 @@ public class UserInterface : MonoBehaviour
 		{
 			case EditorMode.Edit:
 			{
-				UpdateMapVisuals( m_editLayout );
+				UpdateMapVisuals( m_editLayout, false );
 				UpdateProgressText();
 				m_editButton.interactable = false;
 				m_editCurrentButton.interactable = false;
@@ -349,20 +358,20 @@ public class UserInterface : MonoBehaviour
 			{
 				m_playbackIndex = 0;
 				UpdatePlaybackText();
-				UpdateMapVisuals( m_playbackLayouts[ m_playbackIndex ] );
+				UpdateMapVisuals( m_playbackLayouts[ m_playbackIndex ], false );
 				m_playbackButton.interactable = false;
 				break;
 			}
 		}
 	} // SwitchMode
 
-	private void UpdateMapVisuals( MapLayout _layout )
+	private void UpdateMapVisuals( MapLayout _layout, bool _highlightRemovedTiles )
 	{
 		for ( int y = 0; y < Constants.EditableHeight; ++y )
 		{
 			for ( int x = 0; x < Constants.EditableWidth; ++x )
 			{
-				UpdateTileVisuals( x, y, _layout.GetColour(x,y) );
+				UpdateTileVisuals( x, y, _layout.GetColour(x,y), _highlightRemovedTiles );
 			}
 		}
 	} // UpdateMapVisuals
@@ -400,9 +409,10 @@ public class UserInterface : MonoBehaviour
 	private void SetPlaybackIndex( int _index )
 	{
 		Debug.Assert( m_editorMode == EditorMode.Playback );
+		bool highlightRemovedTiles = ( _index == m_playbackIndex + 1 );
 		m_playbackIndex = _index;
 		UpdatePlaybackText();
-		UpdateMapVisuals( m_playbackLayouts[m_playbackIndex] );
+		UpdateMapVisuals( m_playbackLayouts[m_playbackIndex], highlightRemovedTiles );
 	}
 
 	// UI:

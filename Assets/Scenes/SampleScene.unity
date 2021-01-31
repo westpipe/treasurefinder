@@ -1380,6 +1380,7 @@ MonoBehaviour:
   - {fileID: 6606050615294818795, guid: 83e2002eb0afcc54db7efaed59f03cdc, type: 3}
   - {fileID: 6606050615294818795, guid: 4c706d26e4bd89d47bf81558392b5821, type: 3}
   - {fileID: 6606050615294818795, guid: 2e14c40a371359246bc77819c7821c27, type: 3}
+  m_removedTilePrefab: {fileID: 6606050615294818795, guid: 92626a697fc4ad54a9488bc493378a61, type: 3}
   m_cursorPrefab: {fileID: 5943507204926521937, guid: 5983137c5aac54940924d630b540535f, type: 3}
   m_majorRegionPrefab: {fileID: 676683888014384514, guid: 28d446128a9e05b498676f82565531ae, type: 3}
   m_minorRegionPrefab: {fileID: 676683888014384514, guid: 0f5369f9f3842764c98a3131617a0d06, type: 3}
