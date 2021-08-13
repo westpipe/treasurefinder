@@ -14,6 +14,7 @@ It has three main modes:
 The basic sequence of steps I used for the trophy was something like this:
 1) Start THM up, take a photo/screenshot of the board, and then minimise/pause DRV3 so the in-game timer isn't running.
 2) Copy the initial layout into the tool using 'Edit' mode. (Note: The tool starts in Edit mode when you first open it.)
+Optionally, you can load a CSV file that already represents the initial layout. You can generate one automatically with [artur-ag/TreasureHuntParser](https://github.com/artur-ag/TreasureHuntParser).
 3) Run the tool's 'Solve' mode for a while. This will attempt to find a solution that clears as many spaces as possible, but at this point it doesn't know where the hidden treasure is, so whatever it comes up with probably isn't going to be good enough.
 4) Switch the tool into 'Playback' mode, unpause DRV3, and start performing in-game the solution the tool has generated until you discover a treasure. Once you do, pause the game again.
 5) Switch the tool back into 'Edit Current' mode and add the location of that treasure.
