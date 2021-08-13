@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using SimpleFileBrowser;
 
 public class UserInterface : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class UserInterface : MonoBehaviour
 	[SerializeField] private Button m_solveButton;
 	[SerializeField] private Button m_playbackButton;
 	[SerializeField] private Button m_editCurrentButton;
+	[SerializeField] private Button m_loadCsvFileButton;
 
 	private Solver m_solver;
 	private Scorer m_scorer;
@@ -336,6 +338,7 @@ public class UserInterface : MonoBehaviour
 				UpdateProgressText();
 				m_editButton.interactable = false;
 				m_editCurrentButton.interactable = false;
+				m_loadCsvFileButton.interactable = true;
 				break;
 			}
 			case EditorMode.Solve:
@@ -352,6 +355,7 @@ public class UserInterface : MonoBehaviour
 				}
 				m_editCurrentButton.interactable = false;
 				m_solveButton.interactable = false;
+				m_loadCsvFileButton.interactable = false;
 				break;
 			}
 			case EditorMode.Playback:
@@ -360,6 +364,7 @@ public class UserInterface : MonoBehaviour
 				UpdatePlaybackText();
 				UpdateMapVisuals( m_playbackLayouts[ m_playbackIndex ], false );
 				m_playbackButton.interactable = false;
+				m_loadCsvFileButton.interactable = false;
 				break;
 			}
 		}
@@ -438,6 +443,78 @@ public class UserInterface : MonoBehaviour
 		m_layoutChanged = true;
 		SwitchMode( EditorMode.Edit );
 	} // OnEditCurrentButtonPressed
+
+	public void OnLoadCsvButtonPressed()
+	{
+		FileBrowser.SetFilters(true, new FileBrowser.Filter("CSV", ".csv"));
+		FileBrowser.SetDefaultFilter(".csv");
+		FileBrowser.ShowLoadDialog(OnCsvFileSelected, null,
+			pickMode: FileBrowser.PickMode.Files,
+			title: "Select CSV file with THM board",
+			initialPath: System.IO.Directory.GetCurrentDirectory());
+	}
+
+	private void OnCsvFileSelected(string[] filePaths)
+	{
+		if (filePaths.Length != 1)
+		{
+			Debug.LogWarning("Unexpected number of files != 1");
+			return;
+		}
+
+		int[,] board;
+		try
+		{
+			string[] csvLines = System.IO.File.ReadAllLines(filePaths[0]);
+			board = ReadCsv(csvLines);
+		}
+		catch (System.Exception e)
+		{
+			Debug.LogError(e.Message);
+			return;
+		}
+
+		for (int x = 0; x < board.GetLength(0); x++)
+		{
+			for (int y = 0; y < board.GetLength(1); y++)
+			{
+				m_editLayout.SetColour(x, y, board[x, y]);
+				UpdateTileVisuals(x, y, board[x, y], false);
+			}
+		}
+
+		m_layoutChanged = true; // forces the solver to restart when entering solve mode
+	}
+
+	private int[,] ReadCsv(string[] csvLines)
+	{
+		int[,] board = new int[22, 11];
+		if (csvLines.Length < 11)
+			throw new System.Exception("CSV file has less than 11 lines");
+
+		int y = 0;
+		foreach (string line in csvLines)
+		{
+			string[] columns = line.Split(',');
+			if (columns.Length < 22)
+				throw new System.Exception("CSV line has less than 22 numbers");
+
+			int x = 0;
+			foreach (string column in columns)
+			{
+				if (x >= 22 || y >= 11)
+					continue;
+
+				board[x, y] = int.Parse(column);
+				if (board[x, y] > 4)
+					throw new System.Exception("Unexpeced value in CSV: " + board[x, y]);
+				x++;
+			}
+			y++;
+		}
+
+		return board;
+	}
 
 	private void UpdateProgressText()
 	{
